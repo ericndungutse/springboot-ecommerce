@@ -26,7 +26,9 @@ public class CategoryController {
 
     @PostMapping("/api/admin/categories")
     public String createCategory(@RequestBody Category category) {
+
         categoryService.createCategory(category);
         return "Category is created";
+
     }
 }
