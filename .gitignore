@@ -34,4 +34,4 @@ build/
 
 
 # JAVA #
-templates/application.properties
+application.properties
