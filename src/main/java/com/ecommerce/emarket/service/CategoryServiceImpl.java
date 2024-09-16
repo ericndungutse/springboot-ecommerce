@@ -17,6 +17,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() {
+        List<Category> categories = repository.findAll();
+        if (categories.isEmpty()) {
+            throw new APIException("No categories found");
+        }
         return repository.findAll();
     }
 
