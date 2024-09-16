@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.emarket.exceptions.APIException;
 import com.ecommerce.emarket.exceptions.ResourceNotFoundException;
 import com.ecommerce.emarket.model.Category;
 import com.ecommerce.emarket.repositories.CategoryRepository;
@@ -21,6 +22,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void createCategory(Category category) {
+        Category savedCategory = repository.findByCategoryName(category.getCategoryName());
+        if (savedCategory != null) {
+            throw new APIException("Category with name " + category.getCategoryName() + " already exists");
+        }
         repository.save(category);
     }
 
