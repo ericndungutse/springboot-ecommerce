@@ -17,6 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.ecommerce.emarket.model.Category;
 import com.ecommerce.emarket.service.CategoryService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
@@ -33,7 +35,10 @@ public class CategoryController {
     }
 
     @PostMapping("/admin/categories")
-    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+    // @Valid annotation is used to validate the incoming request body against the
+    // constraints specified in the model class. Avoids 500 error when validation
+    // fails and throws MethodsArgumentNotValidException instead.
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
         categoryService.createCategory(category);
         return new ResponseEntity<>("Category is created", HttpStatus.CREATED);
 
