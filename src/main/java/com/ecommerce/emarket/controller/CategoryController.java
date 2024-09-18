@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.emarket.model.Category;
+import com.ecommerce.emarket.payload.CategoryDTO;
 import com.ecommerce.emarket.payload.CategoryResponse;
 import com.ecommerce.emarket.service.CategoryService;
 
@@ -36,10 +37,9 @@ public class CategoryController {
     // @Valid annotation is used to validate the incoming request body against the
     // constraints specified in the model class. Avoids 500 error when validation
     // fails and throws MethodsArgumentNotValidException instead.
-    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
-        categoryService.createCategory(category);
-        return new ResponseEntity<>("Category is created", HttpStatus.CREATED);
-
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO newCategory = categoryService.createCategory(categoryDTO);
+        return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/admin/categories/{categoryId}")
