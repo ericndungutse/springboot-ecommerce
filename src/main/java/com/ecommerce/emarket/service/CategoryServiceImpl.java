@@ -2,12 +2,15 @@ package com.ecommerce.emarket.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.emarket.exceptions.APIException;
 import com.ecommerce.emarket.exceptions.ResourceNotFoundException;
 import com.ecommerce.emarket.model.Category;
+import com.ecommerce.emarket.payload.CategoryDTO;
+import com.ecommerce.emarket.payload.CategoryResponse;
 import com.ecommerce.emarket.repositories.CategoryRepository;
 
 @Service
@@ -15,13 +18,21 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     CategoryRepository repository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
-    public List<Category> getAllCategories() {
+    public CategoryResponse getAllCategories() {
         List<Category> categories = repository.findAll();
         if (categories.isEmpty()) {
             throw new APIException("No categories found");
         }
-        return repository.findAll();
+
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(category -> modelMapper.map(category, CategoryDTO.class)).toList();
+
+        CategoryResponse categoryResponse = new CategoryResponse(categoryDTOs);
+        return categoryResponse;
     }
 
     @Override
