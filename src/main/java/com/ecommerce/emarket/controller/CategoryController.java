@@ -31,7 +31,7 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> getAllCategories(
             @RequestParam(name = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        CategoryResponse categories = categoryService.getAllCategories(pageNumber, pageSize);
+        CategoryResponse categories = categoryService.getAllCategories(pageNumber > 0 ? pageNumber - 1 : 0, pageSize);
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
