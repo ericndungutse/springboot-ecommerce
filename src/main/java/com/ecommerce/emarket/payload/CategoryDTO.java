@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CategoryDTO {
     private Long categoryId;
+
     @NotBlank(message = "Category name is required")
     @Size(min = 5, message = "Category name must be at least 5 characters long")
     private String categoryName;
