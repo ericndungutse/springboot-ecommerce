@@ -11,6 +11,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.ecommerce.emarket.payload.ApiResponse;
+
 // Specialized version of @Component and ControllerAdvice annotation which marks
 // a class as a source for RestAPis
 // It intercpets exceptions thrown by any controller in our app
@@ -48,17 +50,17 @@ public class GlobalExceptionHandler {
 
     // Resource not Found Exception HAndler
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
+    public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
         String message = e.getMessage();
 
-        return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ApiResponse>(new ApiResponse(false, message), HttpStatus.NOT_FOUND);
     }
 
     // API Exception Handler
     @ExceptionHandler(APIException.class)
-    public ResponseEntity<String> handleAPIException(APIException e) {
+    public ResponseEntity<ApiResponse> handleAPIException(APIException e) {
         String message = e.getMessage();
 
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ApiResponse>(new ApiResponse(false, message), HttpStatus.BAD_REQUEST);
     }
 }
