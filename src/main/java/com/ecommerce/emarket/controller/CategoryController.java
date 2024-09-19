@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.emarket.config.AppConstants;
 import com.ecommerce.emarket.payload.CategoryDTO;
 import com.ecommerce.emarket.payload.CategoryResponse;
 import com.ecommerce.emarket.service.CategoryService;
@@ -29,8 +30,8 @@ public class CategoryController {
 
     @GetMapping("/public/categories")
     public ResponseEntity<CategoryResponse> getAllCategories(
-            @RequestParam(name = "pageNumber", defaultValue = "0") Integer pageNumber,
-            @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize) {
         CategoryResponse categories = categoryService.getAllCategories(pageNumber > 0 ? pageNumber - 1 : 0, pageSize);
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
