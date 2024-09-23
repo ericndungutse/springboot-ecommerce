@@ -15,5 +15,12 @@ public class ProductResponse {
     private Long totalElements;
     private Integer totalPages;
     private Boolean lastPage;
-    List<ProductDTO> products;
+    private List<ProductDTO> content;
+
+    public static ProductResponse createProductList(List<ProductDTO> products) {
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(products);
+
+        return productResponse;
+    }
 }

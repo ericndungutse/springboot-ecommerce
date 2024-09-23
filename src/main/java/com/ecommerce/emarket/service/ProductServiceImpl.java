@@ -3,10 +3,12 @@ package com.ecommerce.emarket.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import com.ecommerce.emarket.exceptions.ResourceNotFoundException;
 import com.ecommerce.emarket.model.Product;
 import com.ecommerce.emarket.payload.ProductDTO;
+import com.ecommerce.emarket.payload.ProductResponse;
 import com.ecommerce.emarket.repositories.CategoryRepository;
 import com.ecommerce.emarket.repositories.ProductRepository;
 
@@ -39,6 +41,19 @@ public class ProductServiceImpl implements ProductService {
 
         return modelMapper.map(newProduct, ProductDTO.class);
 
+    }
+
+    @Override
+    public ProductResponse getAllProducts() {
+        // Get List of all products
+        List<Product> products = productRepository.findAll();
+
+        // Map them to productDTO
+        List<ProductDTO> productDTOs = products.stream().map((product) -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+
+        // Return the ProductResponse object
+        return ProductResponse.createProductList(productDTOs);
     }
 
 }
