@@ -71,4 +71,17 @@ public class ProductServiceImpl implements ProductService {
         return ProductResponse.createProductList(productDTOs);
     }
 
+    @Override
+    public ProductResponse getProductsByKeyword(String keyword) {
+        // % coz we are using pattern matching with LIKE
+        List<Product> products = productRepository.findByProductNameLikeIgnoreCase("%" + keyword + "%");
+
+        // Map them to productDTO
+        List<ProductDTO> productDTOs = products.stream().map((product) -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+
+        // Return the ProductResponse object
+        return ProductResponse.createProductList(productDTOs);
+    }
+
 }
