@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import com.ecommerce.emarket.exceptions.ResourceNotFoundException;
+import com.ecommerce.emarket.model.Category;
 import com.ecommerce.emarket.model.Product;
 import com.ecommerce.emarket.payload.ProductDTO;
 import com.ecommerce.emarket.payload.ProductResponse;
@@ -47,6 +48,20 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getAllProducts() {
         // Get List of all products
         List<Product> products = productRepository.findAll();
+
+        // Map them to productDTO
+        List<ProductDTO> productDTOs = products.stream().map((product) -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+
+        // Return the ProductResponse object
+        return ProductResponse.createProductList(productDTOs);
+    }
+
+    @Override
+    public ProductResponse searchByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+        List<Product> products = productRepository.findByCategory(category);
 
         // Map them to productDTO
         List<ProductDTO> productDTOs = products.stream().map((product) -> modelMapper.map(product, ProductDTO.class))

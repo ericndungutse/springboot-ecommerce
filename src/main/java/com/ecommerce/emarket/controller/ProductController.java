@@ -20,7 +20,7 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("/ad min/categories/{categoryId}/products")
+    @PostMapping("/admin/categories/{categoryId}/products")
     public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @PathVariable Long categoryId) {
         return new ResponseEntity<>(productService.addProduct(productDTO, categoryId), HttpStatus.CREATED);
     }
@@ -28,6 +28,14 @@ public class ProductController {
     @GetMapping("/public/products")
     public ResponseEntity<ProductResponse> getAllProducts() {
         return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
+    }
+
+    @GetMapping("/public/categories/{categoryId}/products")
+    public ResponseEntity<ProductResponse> getProductsByCategory(@PathVariable Long categoryId) {
+
+        ProductResponse productPesponse = productService.searchByCategory(categoryId);
+
+        return new ResponseEntity<>(productPesponse, HttpStatus.OK);
     }
 
 }
