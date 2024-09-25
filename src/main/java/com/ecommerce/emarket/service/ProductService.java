@@ -1,5 +1,7 @@
 package com.ecommerce.emarket.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.ecommerce.emarket.payload.ProductDTO;
 import com.ecommerce.emarket.payload.ProductResponse;
 
@@ -15,4 +17,6 @@ public interface ProductService {
     ProductDTO updateProduct(Long productId, ProductDTO productDTO);
 
     ProductDTO deleteProduct(Long productId);
+
+    ProductDTO updateProductImage(Long productId, MultipartFile image);
 }
