@@ -1,14 +1,11 @@
 package com.ecommerce.emarket.service;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +20,16 @@ import com.ecommerce.emarket.repositories.ProductRepository;
 @Service
 public class ProductServiceImpl implements ProductService {
     @Autowired
+    FileService fileService;
+    @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${project.images}")
+    private String path;
 
     @Override
     public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
@@ -129,10 +131,10 @@ public class ProductServiceImpl implements ProductService {
 
         // Upload image to server(Our server) in /images folder and Get file name of
         // uploaded image
-        String path = "images/";
+
         String filename;
         try {
-            filename = uploaImage(path, image);
+            filename = fileService.uploaImage(path, image);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload image", e);
@@ -146,33 +148,6 @@ public class ProductServiceImpl implements ProductService {
 
         // Return the productDTO
         return modelMapper.map(product, ProductDTO.class);
-    }
-
-    private String uploaImage(String path, MultipartFile file) throws IOException {
-        // Get Current
-        String originalFileName = file.getOriginalFilename();
-        // return originalFileName;
-
-        // Generate a unique file name
-        String randomId = UUID.randomUUID().toString();
-        if (originalFileName == null) {
-            throw new IOException("Original file name is null");
-        }
-        String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf(".")));
-        // Why File.separator not just / or \ ? Because it is platform independent
-        String filePath = path + File.separator + fileName;
-
-        // Check if path exists or create it
-        File folder = new File(path);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-
-        // Upload to server
-        Files.copy(file.getInputStream(), Paths.get(filePath));
-
-        // // Return the file name
-        return fileName;
     }
 
 }
