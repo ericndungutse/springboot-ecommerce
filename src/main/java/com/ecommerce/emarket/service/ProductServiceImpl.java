@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ecommerce.emarket.exceptions.APIException;
 import com.ecommerce.emarket.exceptions.ResourceNotFoundException;
 import com.ecommerce.emarket.model.Category;
 import com.ecommerce.emarket.model.Product;
@@ -33,13 +34,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
-        // Map DTO to Entity
-        Product product = modelMapper.map(productDTO, Product.class);
-
         // Get Category
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
 
+        // CHeck if product already exists in the category
+        if (productRepository.existsByProductNameAndCategory(productDTO.getProductName(), category)) {
+            throw new APIException("Product already exists in the category");
+        }
+
+        // Map DTO to Entity
+        Product product = modelMapper.map(productDTO, Product.class);
         // Set Category
         product.setCategory(category);
         double specialPrice = product.getPrice() - (product.getPrice() * product.getDiscount() / 100);

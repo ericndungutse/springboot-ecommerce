@@ -18,6 +18,8 @@ import com.ecommerce.emarket.payload.ProductDTO;
 import com.ecommerce.emarket.payload.ProductResponse;
 import com.ecommerce.emarket.service.ProductService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -25,7 +27,8 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/admin/categories/{categoryId}/products")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @PathVariable Long categoryId) {
+    public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO,
+            @PathVariable Long categoryId) {
         return new ResponseEntity<>(productService.addProduct(productDTO, categoryId), HttpStatus.CREATED);
     }
 
@@ -48,7 +51,8 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId, @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId,
+            @Valid @RequestBody ProductDTO productDTO) {
         return new ResponseEntity<>(productService.updateProduct(productId, productDTO), HttpStatus.OK);
     }
 
