@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ecommerce.emarket.config.AppConstants;
 import com.ecommerce.emarket.payload.ProductDTO;
 import com.ecommerce.emarket.payload.ProductResponse;
 import com.ecommerce.emarket.service.ProductService;
@@ -33,8 +34,14 @@ public class ProductController {
     }
 
     @GetMapping("/public/products")
-    public ResponseEntity<ProductResponse> getAllProducts() {
-        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getAllProducts(
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR) String sortOrder) {
+        return new ResponseEntity<>(
+                productService.getAllProducts(pageNumber > 0 ? pageNumber - 1 : 0, pageSize, sortBy, sortOrder),
+                HttpStatus.OK);
     }
 
     @GetMapping("/public/categories/{categoryId}/products")

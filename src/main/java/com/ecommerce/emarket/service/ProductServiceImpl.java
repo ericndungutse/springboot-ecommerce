@@ -6,6 +6,10 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
+
         // Get Category
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
@@ -59,16 +64,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse getAllProducts() {
+    public ProductResponse getAllProducts(int pageNumber, int pageSize, String sortBy, String sortOrder) {
+
+        // Create SOrtable object
+        Sort sort = sortOrder.equals("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        // Create Pageable object
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Product> productsPage = productRepository.findAll(pageable);
+
         // Get List of all products
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productsPage.getContent();
 
         // Map them to productDTO
         List<ProductDTO> productDTOs = products.stream().map((product) -> modelMapper.map(product, ProductDTO.class))
                 .toList();
 
         // Return the ProductResponse object
-        return ProductResponse.createProductList(productDTOs);
+        return ProductResponse.createProductList(productDTOs, productsPage.getNumber(), productsPage.getSize(),
+                productsPage.getTotalElements(), productsPage.getTotalPages(), productsPage.isLast());
     }
 
     @Override
@@ -82,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
 
         // Return the ProductResponse object
-        return ProductResponse.createProductList(productDTOs);
+        return new ProductResponse(productDTOs);
     }
 
     @Override
@@ -95,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
 
         // Return the ProductResponse object
-        return ProductResponse.createProductList(productDTOs);
+        return new ProductResponse(productDTOs);
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.ecommerce.emarket.payload.ProductResponse;
 public interface ProductService {
     ProductDTO addProduct(ProductDTO productDTO, Long categoryId);
 
-    ProductResponse getAllProducts();
+    ProductResponse getAllProducts(int pageNumber, int pageSize, String sortBy, String sortOrder);
 
     ProductResponse searchByCategory(Long categoryId);
 
