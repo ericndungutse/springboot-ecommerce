@@ -7,13 +7,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.ToString;
 
 @Entity
 @Table(name = "roles")
@@ -27,10 +25,11 @@ public class Role {
     @Column(name = "role_id")
     private Integer roleId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role_name", length = 20)
     // An Enum type in AppRole is persisted the db as integer by default. But wee
     // need to store it as string
+    @Enumerated(EnumType.STRING)
+    @ToString.Exclude
+    @Column(name = "role_name", length = 20)
     private AppRole roleName;
 
     @Override
