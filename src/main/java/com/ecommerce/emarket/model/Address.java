@@ -49,6 +49,14 @@ public class Address {
 
     // Mapped by specify the owner of the relationship
     // From lombok, to avoid circular relationship
+
+    // prevent stackoverflow error/ infinite loop/ circular reference
+
+    // When thetoString() method is called on a Person object with a circular
+    // reference, it will try to convert the parent field to a string. However, to
+    // convert the parent field to a string, the toString() method of the parent
+    // object will be called, which in turn will try to convert its own parent field
+    // to a string, and so on. This creates an infinite loop.
     @ToString.Exclude
     @ManyToMany(mappedBy = "addresses")
     private List<User> user = new ArrayList<>();
