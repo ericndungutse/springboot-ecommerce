@@ -1,7 +1,11 @@
-package com.ecommerce.emarket.security.jwt;
+package com.ecommerce.emarket.security.request;
+
+import jakarta.validation.constraints.NotBlank;
 
 public class LoginRequestDTO {
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
 
     public LoginRequestDTO() {
