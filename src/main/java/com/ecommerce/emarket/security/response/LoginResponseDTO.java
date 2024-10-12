@@ -18,6 +18,10 @@ public class LoginResponseDTO {
         this.roles = roles;
     }
 
+    public LoginResponseDTO(Long id2, String username2, List<String> list) {
+        // TODO Auto-generated constructor stub
+    }
+
     public String getJwt() {
         return jwt;
     }

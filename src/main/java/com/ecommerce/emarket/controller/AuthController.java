@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,9 +107,6 @@ public class AuthController {
 
         Set<String> strRoles = signupRequest.getRoles();
 
-        System.out
-                .println("*******************************************************************************************88"
-                        + strRoles);
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
@@ -142,5 +140,17 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
         return new ResponseEntity<>(new MessageResponse("User registered successfully!"), HttpStatus.OK);
+    }
+
+    @GetMapping("/me")
+    public LoginResponseDTO currentUsename(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
+
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+        loginResponseDTO.setId(userDetails.getId());
+        loginResponseDTO.setUsername(userDetails.getUsername());
+        loginResponseDTO.setRoles(roles);
+        return loginResponseDTO;
     }
 }
