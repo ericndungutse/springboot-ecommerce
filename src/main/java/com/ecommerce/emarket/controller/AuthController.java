@@ -53,7 +53,7 @@ public class AuthController {
     @Autowired
     private RoleRepository roleRepository;
 
-    @PostMapping("/api/signin")
+    @PostMapping("/signin")
     public ResponseEntity<?> sign(@RequestBody LoginRequestDTO loginRequestDTO) {
         Authentication authentication;
         try {
@@ -104,7 +104,11 @@ public class AuthController {
         User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
                 passwordEncoder.encode(signupRequest.getPassword()));
 
-        Set<String> strRoles = signupRequest.getRole();
+        Set<String> strRoles = signupRequest.getRoles();
+
+        System.out
+                .println("*******************************************************************************************88"
+                        + strRoles);
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
@@ -125,6 +129,7 @@ public class AuthController {
                         Role sellerRole = roleRepository.findByRoleName(AppRole.ROLE_SELLER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
                         roles.add(sellerRole);
+                        break;
 
                     default:
                         Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER)
