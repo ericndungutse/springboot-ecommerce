@@ -31,7 +31,17 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private User user;
 
+    // mappedBy:Used onthe inverseside ofa bidirectionalrelationship.It specifiesthe
+    // ownerof therelationship bypointing tothe field in the owning entity that
+    // manages the relationship. The entity with the mappedBy attribute does not own
+    // the foreign key.
     @OneToMany(mappedBy = "cart", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
+    // @JoinColumn: Specifies the
+    // foreign key
+    // column in
+    // the owning
+    // entity (the entity that "owns" the relationship). It is used when this entity
+    // holds the foreign key that references another entity.
     private List<CartItem> cartItems = new ArrayList<>();
 
     private Double totalPrice = 0.0;
