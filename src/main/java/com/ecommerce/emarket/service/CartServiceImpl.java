@@ -52,10 +52,6 @@ public class CartServiceImpl implements CartService {
                 .findCartItemByProductIdAndCartId(product.getProductId(),
                         cart.getCartId());
 
-        System.out.println("**********************************************");
-        System.out.println(product);
-        System.out.println(cartItem);
-
         if (cartItem != null) {
             throw new APIException("Product already in cart");
         }
@@ -131,6 +127,52 @@ public class CartServiceImpl implements CartService {
             throw new APIException("Cart not found");
         }
 
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+
+        List<CartItem> cartItems = cart.getCartItems();
+        cartDTO.setProducts(cartItems.stream().map(item -> {
+            ProductDTO productDTO = modelMapper.map(item.getProduct(), ProductDTO.class);
+            productDTO.setQuantity(item.getQuantity());
+            return productDTO;
+        }).toList());
+
+        return cartDTO;
+
+    }
+
+    @Override
+    // If anything happens, the transaction will be rolled back
+    @jakarta.transaction.Transactional
+    public CartDTO updateCartProductQuantity(Long productId, Integer quantity) {
+        // Find Cart
+        Cart cart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
+
+        if (cart == null) {
+            throw new APIException("Cart not found");
+        }
+
+        // Find cartItem where productId and cartId
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(productId, cart.getCartId());
+
+        if (cartItem == null) {
+            throw new ResourceNotFoundException("CartItem", "productId", productId);
+        }
+        // Update Quantity
+        cartItem.setQuantity(quantity);
+
+        // save cartItem
+        cartItemRepository.save(cartItem);
+
+        // Update Cart Total Price
+        double totalPrice = cart.getCartItems().stream()
+                .mapToDouble(item -> item.getProductPrice() * item.getQuantity())
+                .sum();
+        cart.setTotalPrice(totalPrice);
+
+        // Save Cart
+        cartRepository.save(cart);
+
+        // Return CartDTO
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
         List<CartItem> cartItems = cart.getCartItems();
