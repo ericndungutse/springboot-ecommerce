@@ -2,8 +2,6 @@ package com.ecommerce.emarket.service;
 
 import java.util.List;
 
-import org.apache.el.stream.Stream;
-import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +51,10 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = cartItemRepository
                 .findCartItemByProductIdAndCartId(product.getProductId(),
                         cart.getCartId());
+
+        System.out.println("**********************************************");
+        System.out.println(product);
+        System.out.println(cartItem);
 
         if (cartItem != null) {
             throw new APIException("Product already in cart");
@@ -117,6 +119,28 @@ public class CartServiceImpl implements CartService {
         cart.setUser(authUtil.loggedInUser());
         Cart newCart = cartRepository.save(cart);
         return newCart;
+
+    }
+
+    @Override
+    public CartDTO getMyCart() {
+        // Will load cart by user email
+        Cart cart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
+
+        if (cart == null) {
+            throw new APIException("Cart not found");
+        }
+
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+
+        List<CartItem> cartItems = cart.getCartItems();
+        cartDTO.setProducts(cartItems.stream().map(item -> {
+            ProductDTO productDTO = modelMapper.map(item.getProduct(), ProductDTO.class);
+            productDTO.setQuantity(item.getQuantity());
+            return productDTO;
+        }).toList());
+
+        return cartDTO;
 
     }
 }
