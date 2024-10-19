@@ -10,6 +10,7 @@ import com.ecommerce.emarket.exceptions.ResourceNotFoundException;
 import com.ecommerce.emarket.model.Address;
 import com.ecommerce.emarket.model.User;
 import com.ecommerce.emarket.payload.AddressDTO;
+import com.ecommerce.emarket.payload.ApiResponse;
 import com.ecommerce.emarket.repositories.AddressRepository;
 import com.ecommerce.emarket.repositories.UserRepository;
 import com.ecommerce.emarket.utils.AuthUtil;
@@ -73,6 +74,16 @@ public class AddressServiceImpl implements AddressService {
         address.setCountry(addressDTO.getCountry());
 
         return modelMapper.map(addressRepository.save(address), AddressDTO.class);
+    }
+
+    public ApiResponse deleteAddress(Long addressId) {
+        // Find the address by user id and address id
+        Address address = addressRepository.findByUserAndAddressId(authUtil.loggedInUser(), addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        addressRepository.delete(address);
+
+        return new ApiResponse(true, "Address deleted successfully");
     }
 
 }
