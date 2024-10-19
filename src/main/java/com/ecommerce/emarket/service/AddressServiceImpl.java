@@ -1,6 +1,5 @@
 package com.ecommerce.emarket.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -42,6 +41,13 @@ public class AddressServiceImpl implements AddressService {
         userRepository.save(user);
 
         return modelMapper.map(addressRepository.save(address), AddressDTO.class);
+    }
+
+    @Override
+    public List<AddressDTO> getAddresses() {
+        User user = authUtil.loggedInUser();
+        List<Address> addresses = user.getAddresses();
+        return addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
     }
 
 }

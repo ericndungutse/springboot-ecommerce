@@ -1,8 +1,11 @@
 package com.ecommerce.emarket.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +28,12 @@ public class AddressController {
         return new ResponseEntity<>(address, HttpStatus.CREATED);
     }
 
-    // @GetMapping("/users/addresses")
-    // public ResponseEntity<List<AddressDTO>> getUserAddresses() {
+    @GetMapping("/users/addresses")
+    public ResponseEntity<List<AddressDTO>> getUserAddresses() {
 
-    // List<AddressDTO> addresses = addressService.getUserAddresses();
+        List<AddressDTO> addresses = addressService.getAddresses();
 
-    // return new ResponseEntity<>(addresses, HttpStatus.OK);
-    // }
+        return new ResponseEntity<>(addresses, HttpStatus.OK);
+    }
 
 }
