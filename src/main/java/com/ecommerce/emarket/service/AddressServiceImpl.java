@@ -14,8 +14,6 @@ import com.ecommerce.emarket.repositories.AddressRepository;
 import com.ecommerce.emarket.repositories.UserRepository;
 import com.ecommerce.emarket.utils.AuthUtil;
 
-import jakarta.annotation.Resource;
-
 @Service
 public class AddressServiceImpl implements AddressService {
 
@@ -59,6 +57,22 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
 
         return modelMapper.map(address, AddressDTO.class);
+    }
+
+    @Override
+    public AddressDTO updateAddress(Long addressId, AddressDTO addressDTO) {
+        Address address = addressRepository.findById(
+                addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        address.setStreet(addressDTO.getStreet());
+        address.setBuildingName(addressDTO.getBuildingName());
+        address.setCity(addressDTO.getCity());
+        address.setState(addressDTO.getState());
+        address.setPincode(addressDTO.getPincode());
+        address.setCountry(addressDTO.getCountry());
+
+        return modelMapper.map(addressRepository.save(address), AddressDTO.class);
     }
 
 }

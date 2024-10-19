@@ -10,4 +10,6 @@ public interface AddressService {
     List<AddressDTO> getAddresses();
 
     AddressDTO getAddressById(Long addressId);
+
+    AddressDTO updateAddress(Long addressId, AddressDTO addressDTO);
 }
