@@ -1,13 +1,11 @@
 package com.ecommerce.emarket.model;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -47,6 +45,10 @@ public class Address {
     @Size(min = 6, message = "Pincode must be atleast 6 characters")
     private String pincode;
 
+    @NotBlank
+    @Size(min = 5, message = "Country must be atleast 5 characters")
+    private String country;
+
     // Mapped by specify the owner of the relationship
     // From lombok, to avoid circular relationship
 
@@ -58,21 +60,8 @@ public class Address {
     // object will be called, which in turn will try to convert its own parent field
     // to a string, and so on. This creates an infinite loop.
     @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> user = new ArrayList<>();
-
-    public Address(@NotBlank @Size(min = 5, message = "Street must be atleast 5 characters") String street,
-            @NotBlank @Size(min = 5, message = "Street must be atleast 5 characters") String buildingName,
-            @NotBlank @Size(min = 5, message = "City must be atleast 5 characters") String city,
-            @NotBlank @Size(min = 5, message = "State must be atleast 5 characters") String state,
-            @NotBlank @Size(min = 6, message = "Pincode must be atleast 6 characters") String pincode,
-            List<User> user) {
-        this.street = street;
-        this.buildingName = buildingName;
-        this.city = city;
-        this.state = state;
-        this.pincode = pincode;
-        this.user = user;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
