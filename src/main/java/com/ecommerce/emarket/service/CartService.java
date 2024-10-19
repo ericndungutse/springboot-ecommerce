@@ -8,4 +8,6 @@ public interface CartService {
     public CartDTO getMyCart();
 
     public CartDTO updateCartProductQuantity(Long productId, Integer quantity);
+
+    public CartDTO clearMyCart();
 }

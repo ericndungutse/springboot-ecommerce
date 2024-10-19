@@ -1,11 +1,10 @@
 package com.ecommerce.emarket.service;
 
 import java.util.List;
-
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ecommerce.emarket.exceptions.APIException;
 import com.ecommerce.emarket.exceptions.ResourceNotFoundException;
@@ -103,29 +102,23 @@ public class CartServiceImpl implements CartService {
     }
 
     private Cart createCart() {
-        Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
+        Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail()).orElseGet(() -> {
+            Cart cart = new Cart();
 
-        if (userCart != null) {
-            return userCart;
-        }
+            cart.setTotalPrice(0.00);
+            cart.setUser(authUtil.loggedInUser());
+            Cart newCart = cartRepository.save(cart);
+            return newCart;
+        });
 
-        Cart cart = new Cart();
-
-        cart.setTotalPrice(0.00);
-        cart.setUser(authUtil.loggedInUser());
-        Cart newCart = cartRepository.save(cart);
-        return newCart;
-
+        return userCart;
     }
 
     @Override
     public CartDTO getMyCart() {
         // Will load cart by user email
-        Cart cart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
-
-        if (cart == null) {
-            throw new APIException("Cart not found");
-        }
+        Cart cart = cartRepository.findCartByEmail(authUtil.loggedInEmail())
+                .orElseThrow(() -> new APIException("Cart not found"));
 
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
@@ -142,14 +135,11 @@ public class CartServiceImpl implements CartService {
 
     @Override
     // If anything happens, the transaction will be rolled back
-    @jakarta.transaction.Transactional
+    @Transactional
     public CartDTO updateCartProductQuantity(Long productId, Integer quantity) {
         // Find Cart
-        Cart cart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
-
-        if (cart == null) {
-            throw new APIException("Cart not found");
-        }
+        Cart cart = cartRepository.findCartByEmail(authUtil.loggedInEmail())
+                .orElseThrow(() -> new APIException("Cart not found"));
 
         // Find cartItem where productId and cartId
         CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(productId, cart.getCartId());
@@ -184,5 +174,20 @@ public class CartServiceImpl implements CartService {
 
         return cartDTO;
 
+    }
+
+    @Override
+    @Transactional
+    public CartDTO clearMyCart() {
+        Cart cart = cartRepository.findCartByEmail(authUtil.loggedInEmail())
+                .orElseThrow(() -> new APIException("Cart not found"));
+
+        cartItemRepository.deleteAllByCartId(cart.getCartId());
+
+        // Remove all cart items
+
+        cartRepository.deleteCartById(cart.getCartId());
+
+        return modelMapper.map(cart, CartDTO.class);
     }
 }
