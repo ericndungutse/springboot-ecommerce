@@ -6,12 +6,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.emarket.exceptions.ResourceNotFoundException;
 import com.ecommerce.emarket.model.Address;
 import com.ecommerce.emarket.model.User;
 import com.ecommerce.emarket.payload.AddressDTO;
 import com.ecommerce.emarket.repositories.AddressRepository;
 import com.ecommerce.emarket.repositories.UserRepository;
 import com.ecommerce.emarket.utils.AuthUtil;
+
+import jakarta.annotation.Resource;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -48,6 +51,14 @@ public class AddressServiceImpl implements AddressService {
         User user = authUtil.loggedInUser();
         List<Address> addresses = user.getAddresses();
         return addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
+    }
+
+    @Override
+    public AddressDTO getAddressById(Long addressId) {
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        return modelMapper.map(address, AddressDTO.class);
     }
 
 }
