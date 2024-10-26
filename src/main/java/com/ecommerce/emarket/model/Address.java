@@ -1,5 +1,7 @@
 package com.ecommerce.emarket.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -61,6 +63,7 @@ public class Address {
     // to a string, and so on. This creates an infinite loop.
     @ToString.Exclude
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -1,5 +1,7 @@
 package com.ecommerce.emarket.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +25,7 @@ public class Payment {
     private Long paymentId;
 
     @OneToOne(mappedBy = "payment")
+    @JsonIgnore
     private Order order;
 
     @NotBlank

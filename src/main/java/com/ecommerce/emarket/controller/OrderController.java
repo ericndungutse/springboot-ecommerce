@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.emarket.model.Order;
 import com.ecommerce.emarket.payload.OrderDTO;
 import com.ecommerce.emarket.payload.OrderRequestDTO;
 import com.ecommerce.emarket.service.OrderService;
 import com.ecommerce.emarket.utils.AuthUtil;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -23,10 +26,10 @@ public class OrderController {
     @Autowired
     private AuthUtil authUtil;
 
-    @PostMapping("/order/users/{userId}/payments/{paymentMethod}")
+    @PostMapping("/orders/users/{userId}/payments/{paymentMethod}")
     public ResponseEntity<OrderDTO> orderProducts(
             @PathVariable Long userId,
-            @PathVariable String paymentMethod, @RequestBody OrderRequestDTO orderRquestDTO) {
+            @PathVariable String paymentMethod, @Valid @RequestBody OrderRequestDTO orderRquestDTO) {
 
         String emailId = authUtil.loggedInEmail();
 

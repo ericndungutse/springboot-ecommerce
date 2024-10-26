@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,12 +21,14 @@ import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
 @Table(name = "orders")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,18 +39,22 @@ public class Order {
     private String email;
 
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
+    @JsonIgnore
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDate orderDate;
 
     @OneToOne
     @JoinColumn(name = "payment_id")
+    @ToString.Exclude
     private Payment payment;
 
     private double totalAmount;
     private String orderStatus;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
+
 }

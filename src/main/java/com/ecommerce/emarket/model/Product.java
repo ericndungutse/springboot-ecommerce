@@ -37,6 +37,10 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.REMOVE })
+    private List<OrderItem> orderItems = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private User user;
