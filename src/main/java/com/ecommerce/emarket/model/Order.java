@@ -34,7 +34,7 @@ public class Order {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "order_id", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
+    @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDate orderDate;

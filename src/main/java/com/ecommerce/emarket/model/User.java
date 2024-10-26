@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,7 +73,8 @@ public class User {
         // OrpanRemoval is used to delete the product if the user is deleted
         @ToString.Exclude
         @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
-        private Set<Product> products;
+        @JdbcTypeCode(SqlTypes.JSON)
+        private Set<Product> products = new HashSet<>();
 
         // When address of a user is set, user_addresses is
         @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
