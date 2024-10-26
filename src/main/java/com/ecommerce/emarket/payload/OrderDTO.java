@@ -1,6 +1,7 @@
 package com.ecommerce.emarket.payload;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -13,10 +14,10 @@ import lombok.NoArgsConstructor;
 public class OrderDTO {
     private Long orderId;
     private String email;
+    private List<OrderItemDTO> orderItems = new ArrayList<>();
     private LocalDate orderDate;
     private PaymentDTO payment;
     private double totalAmount;
     private String orderStatus;
-    private Long addressId;
-    private List<OrderItemDTO> orderItems;
+    private AddressDTO address;
 }
