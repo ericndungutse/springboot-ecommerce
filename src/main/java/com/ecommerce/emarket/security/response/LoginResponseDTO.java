@@ -43,7 +43,7 @@ public class LoginResponseDTO {
     }
 
     public void setRoles(String role) {
-        this.roles.addLast(role);
+        this.roles.add(role);
     }
 
     public Long getId() {
