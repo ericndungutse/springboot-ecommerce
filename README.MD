@@ -1,4 +1,4 @@
-# Spring Boot E-commerce API
+# Spring Boot E-commerce Restfull API
 
 A comprehensive RESTful API for an e-commerce application built with Spring Boot. This backend solution provides complete functionality for user authentication, product catalog management, order processing, and cart operations.
 
